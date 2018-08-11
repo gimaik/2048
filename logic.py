@@ -87,6 +87,3 @@ class Matrix():
             self.merge()
             self.cover_up()
             self.reverse()
-
-
-#hdskjadsak§
