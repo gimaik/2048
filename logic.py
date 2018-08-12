@@ -1,4 +1,4 @@
-from random import randint
+from random import randint, choice
 
 
 # construct new game
@@ -10,6 +10,7 @@ class Matrix():
         self.fill = fill
         self.digit = digit
         self.done = False
+        self.score = 0
 
         for i in range(self.row):
             self.mat.append([self.fill] * self.col)
@@ -17,14 +18,27 @@ class Matrix():
     def __getitem__(self, index):
         return self.mat[index]
 
+    def check_not_filled(self):
+        for i in range(self.row):
+            for j in range(self.col):
+                if self.mat[i][j] == self.fill:
+                    return True
+        return False
+
+    def score(self):
+        for i in range(self.row):
+            for j in range(self.col):
+                self.score += self.mat[i][j]
+
     def add_digit(self):
         x = randint(0, len(self.mat) - 1)
         y = randint(0, len(self.mat) - 1)
 
-        while self.mat[x][y] != self.fill:
-            x = randint(0, len(self.mat) - 1)
-            y = randint(0, len(self.mat) - 1)
-        self.mat[x][y] = self.digit
+        if self.check_not_filled():
+            while self.mat[x][y] != self.fill:
+                x = randint(0, len(self.mat) - 1)
+                y = randint(0, len(self.mat) - 1)
+            self.mat[x][y] = self.digit**choice([1,2])
 
     def game_state(self):
         for i in range(self.col):

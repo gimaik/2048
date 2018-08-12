@@ -1,6 +1,7 @@
 from tkinter import *
 from logic import *
 from random import *
+import time
 
 SIZE = 500
 GRID_LEN = 4
@@ -108,5 +109,11 @@ class GameGrid(Frame):
             index = (self.gen(), self.gen())
         self.matrix[index[0]][index[1]] = 2
 
+    def quit(self):
+        time.sleep(2)
+        self.destroy()
+
 
 gamegrid = GameGrid()
+
+
