@@ -45,7 +45,68 @@ class GameGrid(Frame):
                          }
         self.grid_cells = []
         self.init_grid()
+        self.matrix = Matrix(4, 4, 2, 0)
         self.init_matrix()
-        self.upgrade_grid_cells()
+        self.update_grid_cells()
         self.mainloop()
 
+    def init_grid(self):
+        background = Frame(self, bg=BACKGROUND_COLOR_GAME, width=SIZE, height=SIZE)
+        background.grid()
+        for i in range(GRID_LEN):
+            grid_row = []
+            for j in range(GRID_LEN):
+                cell = Frame(background, bg=BACKGROUND_COLOR_CELL_EMPTY, width=SIZE / GRID_LEN, height=SIZE / GRID_LEN)
+                cell.grid(row=i, column=j, padx=GRID_PADDING, pady=GRID_PADDING)
+                t = Label(master=cell, text="", bg=BACKGROUND_COLOR_CELL_EMPTY, justify=CENTER, font=FONT, width=4,
+                          height=2)
+                t.grid()
+                grid_row.append(t)
+
+            self.grid_cells.append(grid_row)
+
+    def gen(self):
+        return randint(0, GRID_LEN - 1)
+
+    def init_matrix(self):
+        self.matrix.add_digit()
+        self.matrix.add_digit()
+        self.matrix.done = True
+
+    def update_grid_cells(self):
+        for i in range(GRID_LEN):
+            for j in range(GRID_LEN):
+                new_number = self.matrix[i][j]
+                if new_number == 0:
+                    self.grid_cells[i][j].configure(text="", bg=BACKGROUND_COLOR_CELL_EMPTY)
+                else:
+                    self.grid_cells[i][j].configure(text=str(new_number), bg=BACKGROUND_COLOR_DICT[new_number],
+                                                    fg=CELL_COLOR_DICT[new_number])
+        self.update_idletasks()
+
+    def key_down(self, event):
+        key = repr(event.char)
+
+        if key in self.commands:
+            self.matrix.move(move_type=self.commands[key])
+
+            if self.matrix.done:
+                self.matrix.add_digit()
+                self.update_grid_cells()
+                self.matrix.done = False
+
+                if self.matrix.game_state()=="Win":
+                    self.grid_cells[1][1].configure(text="You",bg=BACKGROUND_COLOR_CELL_EMPTY)
+                    self.grid_cells[1][2].configure(text="Win!",bg=BACKGROUND_COLOR_CELL_EMPTY)
+                if self.matrix.game_state()=="Lose":
+                    self.grid_cells[1][1].configure(text="You", bg=BACKGROUND_COLOR_CELL_EMPTY)
+                    self.grid_cells[1][2].configure(text="Lose!", bg=BACKGROUND_COLOR_CELL_EMPTY)
+
+    def generate_next(self):
+        index = (self.gen(), self.gen())
+        while self.matrix[index[0]][index[1]] != 0:
+            index = (self.gen(), self.gen())
+        self.matrix[index[0]][index[1]] = 2
+
+
+gamegrid = GameGrid()

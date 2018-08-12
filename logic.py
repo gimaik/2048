@@ -26,6 +26,31 @@ class Matrix():
             y = randint(0, len(self.mat) - 1)
         self.mat[x][y] = self.digit
 
+    def game_state(self):
+        for i in range(self.col):
+            for j in range(self.row):
+                if self.mat[i][j]==2048:
+                    return "Win"
+
+        for i in range(self.col-1):
+            for j in range(self.row-1):
+                if self.mat[i][j]==self.mat[i+1][j] or self.mat[i][j+1]==self.mat[i][j]:
+                    return "Not Over"
+
+        for i in range(self.col):
+            for j in range(self.row):
+                if self.mat[i][j]==self.fill:
+                    return "Not Over"
+
+        for k in range(self.col-1):
+            if self.mat[self.row-1][k]==self.mat[self.row-1][k+1]:
+                return "Not Over"
+
+        for j in range(self.row-1):
+            if self.mat[j][self.col-1]==self.mat[j+1][self.col-1]:
+                return "Not Over"
+        return "Lose"
+
     def reverse(self):
         for i in range(self.row):
             self.mat[i] = self.mat[i][::-1]
@@ -61,14 +86,13 @@ class Matrix():
 
     def move(self, move_type):
         if move_type == "up":
-            print("up")
             self.transpose()
             self.cover_up()
             self.merge()
             self.cover_up()
             self.transpose()
+            self.done = True
         elif move_type == "down":
-            print("down")
             self.transpose()
             self.reverse()
             self.cover_up()
@@ -76,14 +100,16 @@ class Matrix():
             self.cover_up()
             self.reverse()
             self.transpose()
+            self.done = True
         elif move_type == "left":
-            print("left")
             self.cover_up()
             self.merge()
             self.cover_up()
+            self.done = True
         elif move_type == "right":
             self.reverse()
             self.cover_up()
             self.merge()
             self.cover_up()
             self.reverse()
+            self.done = True
